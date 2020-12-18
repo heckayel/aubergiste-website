@@ -12,7 +12,7 @@
             @blur="updateBlur"
             @keypress.enter="update"
             outline
-            auto-grow="true"
+            :auto-grow="true"
         />
 
     </span>

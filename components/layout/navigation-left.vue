@@ -1,48 +1,30 @@
 <template>
     <div>
-        <v-list dense>
+        <v-subheader>Le monde</v-subheader>
+        <v-list>
+            <v-list-item>
+                <v-list-item-content>
+                    <v-list-item-title @click="showUnite=!showUnite">Unités</v-list-item-title>
+                    <v-list-item-subtitle>
+                        <ul v-if="showUnite && currentMonde !== null">
+                            <li v-for="(unite,uniteIndex) of currentMonde.unites" :key="uniteIndex">
+                                <v-tooltip bottom>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <span v-bind="attrs" v-on="on">[{{ unite.code }}] {{ unite.libelle }}</span>
+                                    </template>
+                                    <span>{{ unite.description }}</span>
+                                </v-tooltip>
 
-            <v-list-item v-for="(discordServer,index) of getDiscordServers" :key="index" dense>
-                <v-list-item-action>
-                    <v-icon small>mdi-server</v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                    <v-list-item-title>
-                        {{ discordServer.name }}
-                    </v-list-item-title>
+                            </li>
+                        </ul>
+                    </v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
-
-            <v-list-item v-if="visibilityAddServer" dense>
-                <v-list-item-action>
-                </v-list-item-action>
-                <v-list-item-content>
-                    <v-list-item-title>
-                    </v-list-item-title>
-                    <v-list-item-content>
-                        <v-row>
-                            <v-col>
-                                <v-text-field v-model="newServerModel.discordId" label="Id du serveur" outlined dense />
-                            </v-col>
-                        </v-row>
-                        <v-row>
-                            <v-col>
-                                <v-btn @click="addServer">Valider</v-btn>
-                            </v-col>
-                        </v-row>
-                    </v-list-item-content>
-                </v-list-item-content>
-            </v-list-item>
-            <v-list-item dense>
-                <v-list-item-action>
-                </v-list-item-action>
-                <v-list-item-content>
-                    <v-list-item-title>
-                        <v-btn @click="showAddServer">Ajouter</v-btn>
-                    </v-list-item-title>
-                </v-list-item-content>
-            </v-list-item>
+            <v-list-item>Utilisateurs</v-list-item>
         </v-list>
+        <v-divider />
+        <v-subheader>Les scenarios</v-subheader>
+        <scenario-list v-on="$listeners" />
     </div>
 </template>
 
@@ -51,31 +33,19 @@
 
     import {Component, Vue} from "vue-property-decorator";
     import {Action, Getter} from "nuxt-class-component";
+    import ScenarioList from "~/components/scenarios/ScenarioList.vue";
+    import Monde from "~/models/Monde";
 
     @Component({
-        components: {},
+        components: {ScenarioList},
     })
     export default class NavigationLeft extends Vue {
+        @Getter('monde/getCurrentMondeId') getCurrentMondeId: any;
 
-        @Action("discord-server/fetchAll") fetchDiscordServer: any;
-        @Getter('discord-server/getDiscordServers') getDiscordServers: any;
+        showUnite: boolean = true;
 
-        visibilityAddServer: boolean = false;
-        newServerModel: any = {
-            discordId: ''
-        };
-
-        async mounted() {
-            await this.fetchDiscordServer();
+        get currentMonde() {
+            return Monde.findOneById(this.getCurrentMondeId);
         }
-
-        showAddServer() {
-            this.visibilityAddServer = true;
-        }
-
-        addServer() {
-            this.visibilityAddServer = false;
-        }
-
     }
 </script>

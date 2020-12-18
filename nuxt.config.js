@@ -2,7 +2,7 @@ require('dotenv').config();
 
 // ajouter seulement `router.base = '/<nom-du-depot>/'` si `DEPLOY_ENV` est `GH_PAGES`
 const routerBase = process.env.DEPLOY_ENV === 'GH_PAGES' ? {
-    base: '/aubergiste-website/'
+    base: '/spatiabot-website/'
 } : {};
 
 export default {
@@ -39,7 +39,9 @@ export default {
     /*
     ** Global CSS
     */
-    css: [],
+    css: [
+        '~/assets/css/main.scss'
+    ],
     /*
     ** Plugins to load before mounting the App
     */
@@ -79,8 +81,8 @@ export default {
         strategies: {
             local: {
                 endpoints: {
-                    login: {url: '/auth/login', method: 'post', propertyName: 'token'},
-                    user: {url: '/user/profile', method: 'get', propertyName: 'user'},
+                    login: {url: '/users/login', method: 'post', propertyName: 'token'},
+                    user: {url: '/users/profile', method: 'get', propertyName: 'user'},
                     logout: false
                 }
             },
@@ -94,6 +96,10 @@ export default {
                 redirect_uri: 'http://localhost:3003/user/connection',
                 access_token_endpoint: '/auth/google-redirect'
             },
+            discord:{
+                client_id:'776101467152318464',
+                redirect_uri: 'https://discord.com/api/oauth2/authorize?client_id=776101467152318464&redirect_uri=http%3A%2F%2Flocalhost%3A3041&response_type=code&scope=guilds%20identify%20email'
+            }
         }
     },
     /*
